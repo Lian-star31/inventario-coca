@@ -972,5 +972,16 @@ irA('p-inicio');
 
 
 if ('serviceWorker' in navigator) {
-  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  addEventListener('load', async () => {
+    try {
+      await navigator.serviceWorker.register('sw.js');
+      await navigator.serviceWorker.ready;
+      // Confirmación única: sin esto no hay forma de saber en qué momento
+      // la app ya quedó guardada y se puede trabajar sin conexión.
+      if (!localStorage.getItem('inv.listaOffline')) {
+        localStorage.setItem('inv.listaOffline', '1');
+        aviso('App guardada en el dispositivo. Ya funciona sin internet.');
+      }
+    } catch {}
+  });
 }

@@ -464,7 +464,7 @@ function pintarInicio() {
 
   let html = `
     <div class="hero">
-      <div class="hero-icono">${ICONOS.caja}</div>
+      <img class="hero-icono" src="icons/hero.png" alt="">
       <div>
         <h2>Control de Inventario</h2>
         <p>${Store.totalActivos()} productos activos</p>

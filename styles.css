@@ -72,10 +72,9 @@ body{
 .hero{display:flex;align-items:center;gap:13px;margin-bottom:14px}
 .hero-icono{
   width:52px;height:52px;border-radius:13px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--rojo),var(--rojo-osc));
-  display:grid;place-items:center;box-shadow:0 4px 12px rgba(204,0,10,.3);
+  display:block;object-fit:cover;
+  box-shadow:0 4px 12px rgba(204,0,10,.28);
 }
-.hero-icono svg{width:26px;height:26px;fill:#fff}
 .hero h2{margin:0;font-size:19px;font-weight:700;letter-spacing:-.3px}
 .hero p{margin:2px 0 0;font-size:12.5px;color:var(--gris)}
 
@@ -317,4 +316,23 @@ input.cantidad:focus{outline:0;border-color:var(--rojo);background:#fff}
 .res-txt span{
   display:block;font-size:12.5px;color:var(--gris);margin-top:2px;line-height:1.4;
   overflow-wrap:anywhere;
+}
+
+/* ---------- Marca de agua ----------
+   Va en la pantalla (que no se desplaza), no en el área con scroll, para que
+   quede quieta detrás del contenido. Nuevo conteo la omite a propósito:
+   ahí lo único que importa es leer y escribir cifras sin distracción. */
+#p-inicio, #p-historial, #p-catalogo{
+  background-color:var(--fondo);
+  /* El velo del mismo color del fondo deja pasar apenas una insinuación
+     de la imagen; sin él la ola compite con el contenido. */
+  background-image:
+    linear-gradient(rgba(242,242,245,.82), rgba(242,242,245,.82)),
+    url('icons/fondo.png');
+  background-repeat:no-repeat, no-repeat;
+  background-position:center, center bottom;
+  background-size:cover, cover;
+}
+@media print{
+  #p-inicio, #p-historial, #p-catalogo{background-image:none}
 }

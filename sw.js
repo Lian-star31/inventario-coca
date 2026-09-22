@@ -1,7 +1,7 @@
-const CACHE = 'inventario-v9';
+const CACHE = 'inventario-v10';
 const ARCHIVOS = [
-  './', './index.html', './styles.css?v=9', './app.js?v=9', './manifest.json',
-  './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png'
+  './', './index.html', './styles.css?v=10', './app.js?v=10', './manifest.json',
+  './icons/hero.png', './icons/fondo.png', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png'
 ];
 
 self.addEventListener('install', e => {

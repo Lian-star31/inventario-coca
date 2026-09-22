@@ -134,17 +134,17 @@ body{
 .fila .nombre{flex:1;font-size:14.5px;line-height:1.3;min-width:0}
 .fila .titulo-prod{display:block}
 
-/* Observación editable en la propia fila, sin abrir nada */
-input.obs{
+/* Observación editable en la propia fila, sin abrir nada.
+   Crece a lo alto y parte las palabras largas: nunca scroll horizontal. */
+textarea.obs{
   display:block;width:100%;margin-top:4px;
   border:0;border-bottom:1px dashed var(--borde);background:none;
-  font:12.5px/1.4 inherit;font-family:inherit;color:var(--gris);
-  padding:2px 0;
+  font:12.5px/1.45 inherit;font-family:inherit;color:var(--gris);
+  padding:2px 0;resize:none;overflow:hidden;
+  white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;
 }
-input.obs::placeholder{color:var(--gris-suave);opacity:.75}
-input.obs:focus{
-  outline:0;border-bottom-color:var(--rojo);color:var(--tinta);
-}
+textarea.obs::placeholder{color:var(--gris-suave);opacity:.75}
+textarea.obs:focus{outline:0;border-bottom-color:var(--rojo);color:var(--tinta)}
 
 input.cantidad{
   width:68px;flex-shrink:0;text-align:center;font-family:inherit;
@@ -298,4 +298,23 @@ input.cantidad:focus{outline:0;border-color:var(--rojo);background:#fff}
     padding-right:max(14px,calc((100% - 680px)/2));
   }
   .tabs{max-width:680px;margin:0 auto;width:100%}
+}
+
+/* ---------- Resumen inteligente (Inicio) ---------- */
+.res-linea{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:9px 0;border-top:1px solid var(--borde);
+}
+.res-linea:first-of-type{border-top:0;padding-top:2px}
+.res-icono{
+  flex-shrink:0;width:20px;height:20px;border-radius:50%;
+  background:color-mix(in srgb, var(--c) 14%, transparent);
+  color:var(--c);font-size:12px;font-weight:800;
+  display:grid;place-items:center;margin-top:1px;
+}
+.res-txt{min-width:0}
+.res-txt b{display:block;font-size:14px;font-weight:650;line-height:1.3}
+.res-txt span{
+  display:block;font-size:12.5px;color:var(--gris);margin-top:2px;line-height:1.4;
+  overflow-wrap:anywhere;
 }

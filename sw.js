@@ -1,6 +1,6 @@
-const CACHE = 'inventario-v8';
+const CACHE = 'inventario-v9';
 const ARCHIVOS = [
-  './', './index.html', './styles.css?v=8', './app.js?v=8', './manifest.json',
+  './', './index.html', './styles.css?v=9', './app.js?v=9', './manifest.json',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png'
 ];
 

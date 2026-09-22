@@ -492,6 +492,8 @@ function pintarInicio() {
       </div>`;
   }
 
+  html += tarjetaResumen();
+
   html += `<div class="tarjeta"><p class="rotulo">Catálogo</p>`;
   if (!cats.length) {
     html += `<p style="margin:0;font-size:13.5px;color:var(--gris)">Sin categorías. Créalas en la pestaña Catálogo.</p>`;
@@ -510,6 +512,89 @@ function pintarInicio() {
 
   $('#btn-nuevo')?.addEventListener('click', iniciarCaptura);
   $('#tar-ultimo')?.addEventListener('click', () => abrirReporte(Store.ultimo(), false));
+}
+
+
+/* ---------- Resumen inteligente de Inicio ---------- */
+
+const RES = {
+  baja:    { c: 'var(--azul)',  i: '↓' },
+  sube:    { c: 'var(--verde)', i: '↑' },
+  igual:   { c: 'var(--gris)',  i: '=' },
+  critico: { c: 'var(--rojo)',  i: '!' },
+  alto:    { c: 'var(--ambar)', i: '!' },
+  bien:    { c: 'var(--verde)', i: '✓' },
+  info:    { c: 'var(--gris)',  i: '·' }
+};
+
+function lineaResumen(tipo, titulo, detalle) {
+  const r = RES[tipo] || RES.info;
+  return `<div class="res-linea" style="--c:${r.c}">
+    <span class="res-icono">${r.i}</span>
+    <div class="res-txt">
+      <b>${esc(titulo)}</b>
+      ${detalle ? `<span>${esc(detalle)}</span>` : ''}
+    </div>
+  </div>`;
+}
+
+/** Estado actual con un conteo; tendencias y comparaciones cuando hay historial. */
+function tarjetaResumen() {
+  const ult = Store.ultimo();
+  if (!ult) return '';
+
+  const previos = Store.previos(ult);
+  const dias = Math.floor((Date.now() - ult.fecha) / DIA);
+  const cuando = dias <= 0 ? 'hoy' : dias === 1 ? 'ayer' : `hace ${dias} días`;
+
+  let filas = '';
+
+  // Movimiento neto contra el conteo anterior
+  if (previos.length) {
+    const ahora = totalUnidades(ult), antes = totalUnidades(previos[0]);
+    const d = ahora - antes;
+    const pct = antes ? Math.round(Math.abs(d) / antes * 100) : 0;
+    const entre = Math.max(1, Math.round((ult.fecha - previos[0].fecha) / DIA));
+    const lapso = `en ${entre} día${entre === 1 ? '' : 's'}`;
+
+    if (d < 0) {
+      filas += lineaResumen('baja', `Salieron ${Math.abs(d)} unidades`,
+        `${pct}% menos que el conteo anterior, ${lapso}`);
+    } else if (d > 0) {
+      filas += lineaResumen('sube', `Entraron ${d} unidades`,
+        `${pct}% más que el conteo anterior — hubo resurtido`);
+    } else {
+      filas += lineaResumen('igual', 'El total no se movió',
+        `Mismas unidades que el conteo anterior, ${lapso}`);
+    }
+  }
+
+  // Lo que exige acción, tomado del mismo motor que el reporte
+  const est = generarEstrategia(ult, previos);
+  const urgentes = est.hallazgos.filter(h => h.severidad === 'critico' || h.severidad === 'alto');
+
+  urgentes.slice(0, 2).forEach(h => {
+    const primero = (h.detalle || '').split('\n')[0].replace(/^•\s*/, '');
+    filas += lineaResumen(h.severidad, h.titulo, primero);
+  });
+
+  if (!urgentes.length) {
+    filas += lineaResumen('bien', 'Sin focos rojos',
+      'Ningún producto en cero ni por agotarse.');
+  }
+
+  // Qué falta para que el análisis sea de tendencia
+  if (previos.length < 2) {
+    const faltan = 2 - previos.length;
+    filas += lineaResumen('info',
+      `${faltan} conteo${faltan === 1 ? '' : 's'} más para ver tendencia`,
+      'Con tres mediciones se detecta producto estancado y rotación estable.');
+  }
+
+  return `<div class="tarjeta">
+    <p class="rotulo">Resumen<span class="sub">Último conteo ${cuando}</span></p>
+    ${filas}
+  </div>`;
 }
 
 
@@ -564,14 +649,22 @@ function pintarCaptura() {
     inp.addEventListener('focus', e => e.target.select());
   });
 
-  $$('#cuerpo-captura input.obs').forEach(inp => {
-    inp.addEventListener('input', e => {
+  $$('#cuerpo-captura textarea.obs').forEach(ta => {
+    ajustarAlto(ta);
+    ta.addEventListener('input', e => {
       const l = borrador.lineas.find(x => x.id === e.target.dataset.obs);
       l.observaciones = e.target.value;
+      ajustarAlto(e.target);
     });
   });
 
   actualizarProgreso();
+}
+
+/** Crece a lo alto según el texto; nunca aparece barra horizontal. */
+function ajustarAlto(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = ta.scrollHeight + 'px';
 }
 
 function filaCaptura(l) {
@@ -581,8 +674,8 @@ function filaCaptura(l) {
     <span class="punto ${clase}"></span>
     <div class="nombre">
       <span class="titulo-prod">${esc(l.nombreProducto)}</span>
-      <input class="obs" data-obs="${l.id}" type="text"
-             placeholder="Observaciones (opcional)" value="${esc(l.observaciones)}">
+      <textarea class="obs" data-obs="${l.id}" rows="1"
+                placeholder="Observaciones (opcional)">${esc(l.observaciones)}</textarea>
     </div>
     <input class="cantidad" data-id="${l.id}" type="text" inputmode="numeric"
            pattern="[0-9]*" placeholder="" value="${l.cantidad ?? ''}">

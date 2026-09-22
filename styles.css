@@ -327,11 +327,14 @@ input.cantidad:focus{outline:0;border-color:var(--rojo);background:#fff}
   /* El velo del mismo color del fondo deja pasar apenas una insinuación
      de la imagen; sin él la ola compite con el contenido. */
   background-image:
-    linear-gradient(rgba(242,242,245,.82), rgba(242,242,245,.82)),
+    linear-gradient(rgba(242,242,245,.74), rgba(242,242,245,.74)),
     url('icons/fondo.png');
   background-repeat:no-repeat, no-repeat;
-  background-position:center, center bottom;
-  background-size:cover, cover;
+  /* Anclada abajo a la derecha y escalada por su alto: con "cover" la
+     pantalla vertical del teléfono agrandaba tanto la imagen que recortaba
+     justo la botella y solo quedaba una mancha rosa. */
+  background-position:center, right bottom;
+  background-size:cover, auto 46%;
 }
 @media print{
   #p-inicio, #p-historial, #p-catalogo{background-image:none}

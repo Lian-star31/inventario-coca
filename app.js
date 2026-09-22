@@ -490,17 +490,6 @@ function pintarInicio() {
           ? `<p style="margin:12px 0 0;font-size:12px;color:var(--verde);font-weight:600">
                ${Store.inventarios.length} inventarios acumulados — el análisis ya usa tu historial</p>` : ''}
       </div>`;
-  } else {
-    html += `
-      <div class="tarjeta">
-        <p class="rotulo">Primeros pasos</p>
-        <p style="margin:0 0 8px;font-size:15px;font-weight:600">Aún no tienes inventarios guardados.</p>
-        <p style="margin:0;font-size:13.5px;color:var(--gris);line-height:1.5">
-          Levanta tu primer conteo: solo necesitas escribir la cantidad de cada producto.
-          Las observaciones son opcionales. Al guardarlo, la app analiza tu situación actual,
-          y con los siguientes conteos empieza a calcular rotación y a proponerte estrategia de venta.
-        </p>
-      </div>`;
   }
 
   html += `<div class="tarjeta"><p class="rotulo">Catálogo</p>`;
@@ -575,10 +564,10 @@ function pintarCaptura() {
     inp.addEventListener('focus', e => e.target.select());
   });
 
-  $$('#cuerpo-captura .btn-nota').forEach(b => {
-    b.addEventListener('click', () => {
-      const l = borrador.lineas.find(x => x.id === b.dataset.id);
-      modalNota(l);
+  $$('#cuerpo-captura input.obs').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const l = borrador.lineas.find(x => x.id === e.target.dataset.obs);
+      l.observaciones = e.target.value;
     });
   });
 
@@ -591,12 +580,12 @@ function filaCaptura(l) {
   return `<div class="fila" data-fila="${l.id}">
     <span class="punto ${clase}"></span>
     <div class="nombre">
-      ${esc(l.nombreProducto)}
-      <div class="nota-chica" data-nota="${l.id}" ${l.observaciones ? '' : 'hidden'}>${esc(l.observaciones)}</div>
+      <span class="titulo-prod">${esc(l.nombreProducto)}</span>
+      <input class="obs" data-obs="${l.id}" type="text"
+             placeholder="Observaciones (opcional)" value="${esc(l.observaciones)}">
     </div>
-    <button class="btn-nota ${l.observaciones ? 'llena' : ''}" data-id="${l.id}" aria-label="Observaciones">${ICONOS.nota}</button>
     <input class="cantidad" data-id="${l.id}" type="text" inputmode="numeric"
-           pattern="[0-9]*" placeholder="0" value="${l.cantidad ?? ''}">
+           pattern="[0-9]*" placeholder="" value="${l.cantidad ?? ''}">
   </div>`;
 }
 
@@ -605,11 +594,6 @@ function actualizarFila(l) {
   const punto = $('.punto', fila);
   punto.className = 'punto ' + (l.cantidad === null || l.cantidad === undefined ? ''
     : (l.cantidad === 0 ? 'cero' : 'ok'));
-
-  const nota = $(`[data-nota="${l.id}"]`);
-  nota.textContent = l.observaciones;
-  nota.hidden = !l.observaciones;
-  $('.btn-nota', fila).classList.toggle('llena', !!l.observaciones);
 
   // contador del grupo
   const grupo = borrador.lineas.filter(x => x.nombreCategoria === l.nombreCategoria);
@@ -886,24 +870,6 @@ function cerrarModal() {
 }
 $('#velo').addEventListener('click', e => { if (e.target.id === 'velo') cerrarModal(); });
 
-function modalNota(l) {
-  abrirModal(`
-    <h2>Observaciones</h2>
-    <p class="ayuda">${esc(l.nombreProducto)} — opcional. Úsalo para anotar merma, envase
-      pendiente, producto próximo a caducar o cualquier detalle que quieras en el reporte.</p>
-    <textarea id="m-nota" placeholder="Escribe aquí">${esc(l.observaciones)}</textarea>
-    <div class="modal-botones">
-      <button class="b-cancelar" id="m-cancelar">Cancelar</button>
-      <button class="b-ok" id="m-ok">Listo</button>
-    </div>`);
-  $('#m-nota').focus();
-  $('#m-cancelar').onclick = cerrarModal;
-  $('#m-ok').onclick = () => {
-    l.observaciones = $('#m-nota').value.trim();
-    actualizarFila(l); cerrarModal();
-  };
-}
-
 function modalProducto(prod, catIDporDefecto) {
   const cats = Store.categoriasOrdenadas();
   if (!cats.length) { aviso('Primero crea una categoría'); return; }
@@ -1004,15 +970,6 @@ Store.cargar();
 pintarInicio();
 irA('p-inicio');
 
-function marcarConexion() {
-  const el = $('#estado-offline');
-  const off = !navigator.onLine;
-  el.textContent = off ? 'Sin conexión · OK' : 'Listo sin internet';
-  el.classList.toggle('malo', false);
-}
-addEventListener('online', marcarConexion);
-addEventListener('offline', marcarConexion);
-marcarConexion();
 
 if ('serviceWorker' in navigator) {
   addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));

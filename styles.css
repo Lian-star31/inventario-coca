@@ -132,13 +132,19 @@ body{
 .punto.ok{background:var(--verde)}
 .punto.cero{background:var(--rojo)}
 .fila .nombre{flex:1;font-size:14.5px;line-height:1.3;min-width:0}
-.fila .nota-chica{font-size:11.5px;color:var(--gris);margin-top:3px;word-wrap:break-word}
+.fila .titulo-prod{display:block}
 
-.btn-nota{
-  background:none;border:0;padding:5px;cursor:pointer;color:var(--gris-suave);flex-shrink:0;
+/* Observación editable en la propia fila, sin abrir nada */
+input.obs{
+  display:block;width:100%;margin-top:4px;
+  border:0;border-bottom:1px dashed var(--borde);background:none;
+  font:12.5px/1.4 inherit;font-family:inherit;color:var(--gris);
+  padding:2px 0;
 }
-.btn-nota.llena{color:var(--azul)}
-.btn-nota svg{width:18px;height:18px;fill:currentColor;display:block}
+input.obs::placeholder{color:var(--gris-suave);opacity:.75}
+input.obs:focus{
+  outline:0;border-bottom-color:var(--rojo);color:var(--tinta);
+}
 
 input.cantidad{
   width:68px;flex-shrink:0;text-align:center;font-family:inherit;

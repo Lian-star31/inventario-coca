@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Control de Inventario</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#cc000a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Inventario">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===== INICIO ===== -->
+  <section class="pantalla activa" id="p-inicio">
+    <header class="barra">
+      <h1>Inventario</h1>
+      <span class="chip-offline" id="estado-offline">Sin conexión · OK</span>
+    </header>
+    <div class="scroll" id="cuerpo-inicio"></div>
+  </section>
+
+  <!-- ===== CAPTURA ===== -->
+  <section class="pantalla" id="p-captura">
+    <header class="barra">
+      <button class="btn-texto" id="cancelar-captura">Cancelar</button>
+      <h1>Nuevo conteo</h1>
+      <button class="btn-texto fuerte" id="guardar-captura">Guardar</button>
+    </header>
+    <div class="progreso-caja">
+      <div class="progreso-info">
+        <span id="progreso-texto">0 de 0 capturados</span>
+        <strong id="progreso-unidades">0 unidades</strong>
+      </div>
+      <div class="progreso-riel"><div class="progreso-barra" id="progreso-barra"></div></div>
+    </div>
+    <div class="scroll" id="cuerpo-captura"></div>
+  </section>
+
+  <!-- ===== REPORTE ===== -->
+  <section class="pantalla" id="p-reporte">
+    <header class="barra">
+      <button class="btn-texto" id="volver-reporte">Listo</button>
+      <h1>Reporte</h1>
+      <span class="espaciador"></span>
+    </header>
+    <div class="scroll" id="cuerpo-reporte"></div>
+  </section>
+
+  <!-- ===== HISTORIAL ===== -->
+  <section class="pantalla" id="p-historial">
+    <header class="barra"><h1>Historial</h1></header>
+    <div class="scroll" id="cuerpo-historial"></div>
+  </section>
+
+  <!-- ===== CATÁLOGO ===== -->
+  <section class="pantalla" id="p-catalogo">
+    <header class="barra">
+      <h1>Catálogo</h1>
+      <button class="btn-texto fuerte" id="nueva-categoria">+ Categoría</button>
+    </header>
+    <div class="scroll" id="cuerpo-catalogo"></div>
+  </section>
+
+  <!-- ===== NAV ===== -->
+  <nav class="tabs" id="tabs">
+    <button data-tab="p-inicio" class="activa">
+      <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+      <span>Inicio</span>
+    </button>
+    <button data-tab="p-historial">
+      <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7zm1 4h-2v6l5 3 1-1.7-4-2.3z"/></svg>
+      <span>Historial</span>
+    </button>
+    <button data-tab="p-catalogo">
+      <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
+      <span>Catálogo</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="velo" id="velo" hidden>
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="aviso" id="aviso" hidden></div>
+
+<script src="app.js?v=5"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
   "name": "Control de Inventario",
   "short_name": "Inventario",
-  "description": "Levanta inventario sin internet y genera estrategia de venta.",
+  "description": "Levanta inventario y genera estrategia de venta.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -467,7 +467,7 @@ function pintarInicio() {
       <div class="hero-icono">${ICONOS.caja}</div>
       <div>
         <h2>Control de Inventario</h2>
-        <p>${Store.totalActivos()} productos activos · funciona sin internet</p>
+        <p>${Store.totalActivos()} productos activos</p>
       </div>
     </div>
     <button class="btn-grande" id="btn-nuevo" ${Store.totalActivos() ? '' : 'disabled'}>
